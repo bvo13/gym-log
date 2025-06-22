@@ -9,3 +9,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: learningprocess
+    volumes:
+      - gymdata:/var/lib/postgresql/data
+
+volumes:
+  gymdata:
