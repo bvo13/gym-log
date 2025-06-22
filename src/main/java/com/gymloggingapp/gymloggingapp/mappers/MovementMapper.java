@@ -1,26 +1,38 @@
 package com.gymloggingapp.gymloggingapp.mappers;
 
 import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
+import com.gymloggingapp.gymloggingapp.Entities.SetEntity;
 import com.gymloggingapp.gymloggingapp.dto.MovementDto;
-import org.modelmapper.ModelMapper;
+import com.gymloggingapp.gymloggingapp.dto.SetDto;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class MovementMapper implements Mapper<MovementEntity, MovementDto> {
-    private ModelMapper modelMapper;
 
-    public MovementMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
+    private SetMapper setMapper;
+
+    public MovementMapper(SetMapper setMapper) {
+        this.setMapper = setMapper;
     }
 
     @Override
     public MovementDto mapTo(MovementEntity movementEntity) {
-        return modelMapper.map(movementEntity, MovementDto.class);
+        List<SetDto> setDtos = null;
+        if(movementEntity.getSets()!=null){
+            setDtos = movementEntity.getSets().stream().map(setMapper::mapTo).toList();
+        }
+        return new MovementDto(movementEntity.getId(), movementEntity.getName(), setDtos);
 
     }
 
     @Override
     public MovementEntity mapFrom(MovementDto movementDto) {
-        return modelMapper.map(movementDto, MovementEntity.class);
+        List<SetEntity> setEntities = null;
+        if(movementDto.getSets()!=null){
+            setEntities = movementDto.getSets().stream().map(setMapper::mapFrom).toList();
+        }
+        return new MovementEntity(movementDto.getId(), movementDto.getName(), setEntities);
     }
 }

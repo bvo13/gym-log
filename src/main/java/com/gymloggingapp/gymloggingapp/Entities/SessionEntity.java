@@ -1,5 +1,9 @@
 package com.gymloggingapp.gymloggingapp.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +26,18 @@ public class SessionEntity {
     private LocalDate date;
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<MovementEntity> movements;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity user;
+
+    public SessionEntity(Long id, LocalDate date, List<MovementEntity> movements) {
+        this.id = id;
+        this.movements = movements;
+        this.date = date;
+        this.user = null;
+    }
 }

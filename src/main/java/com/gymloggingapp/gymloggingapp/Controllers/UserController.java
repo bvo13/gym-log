@@ -4,6 +4,7 @@ import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
 import com.gymloggingapp.gymloggingapp.dto.UserDto;
 import com.gymloggingapp.gymloggingapp.mappers.UserMapper;
+import com.gymloggingapp.gymloggingapp.util.References;
 import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class UserController {
     @PostMapping(path = "/users")
     public UserDto createUser(@RequestBody UserDto user){
         UserEntity userEntity = userMapper.mapFrom(user);
+        References.setUserParentReference(userEntity);
         UserEntity savedUser = userService.save(userEntity);
         return userMapper.mapTo(savedUser);
     }
@@ -54,6 +56,7 @@ public class UserController {
         }
         userDto.setId(id);
         UserEntity userEntity = userMapper.mapFrom(userDto);
+        References.setUserParentReference(userEntity);
         UserEntity updatedUser = userService.save(userEntity);
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
 
@@ -67,6 +70,7 @@ public class UserController {
         }
 
         UserEntity userEntity = userMapper.mapFrom(userDto);
+        References.setUserParentReference(userEntity);
         UserEntity updatedUser = userService.partialUpdate(id, userEntity);
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
     }

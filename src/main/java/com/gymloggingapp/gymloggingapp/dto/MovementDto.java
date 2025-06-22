@@ -1,7 +1,5 @@
 package com.gymloggingapp.gymloggingapp.dto;
 
-import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
-import com.gymloggingapp.gymloggingapp.Entities.SetEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,7 @@ public class MovementDto {
 
     private String name;
 
-    private SessionDto session;
 
-    private List<SetDto> set;
+    private List<SetDto> sets;
+
 }

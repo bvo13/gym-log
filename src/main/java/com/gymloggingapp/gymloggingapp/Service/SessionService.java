@@ -10,7 +10,7 @@ public interface SessionService {
 
     List<SessionEntity> findAll();
 
-    Optional<SessionEntity> findOneUser(Long id);
+    Optional<SessionEntity> findOneSession(Long id);
 
     boolean existsbyID(Long id);
 

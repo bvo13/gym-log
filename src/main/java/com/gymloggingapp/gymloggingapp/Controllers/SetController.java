@@ -1,6 +1,8 @@
 package com.gymloggingapp.gymloggingapp.Controllers;
 
+import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
 import com.gymloggingapp.gymloggingapp.Entities.SetEntity;
+import com.gymloggingapp.gymloggingapp.Service.MovementService;
 import com.gymloggingapp.gymloggingapp.Service.SetService;
 import com.gymloggingapp.gymloggingapp.dto.SetDto;
 import com.gymloggingapp.gymloggingapp.mappers.SetMapper;
@@ -16,15 +18,23 @@ import java.util.stream.Collectors;
 public class SetController {
     private SetService setService;
     private SetMapper setMapper;
+    private MovementService movementService;
 
-    public SetController(SetService setService, SetMapper setMapper) {
+    public SetController(SetService setService, SetMapper setMapper, MovementService movementService) {
         this.setService = setService;
         this.setMapper = setMapper;
+        this.movementService = movementService;
     }
 
-    @PostMapping(path = "/sets")
-    public SetDto createSet(@RequestBody SetDto set){
+    @PostMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets")
+    public SetDto createSet(@PathVariable("userId") Long userId,
+                            @PathVariable("sessionId") Long sessionId,
+                            @PathVariable("movementId") Long movementId,
+                            @RequestBody SetDto set){
         SetEntity setEntity = setMapper.mapFrom(set);
+        MovementEntity movementEntity = movementService.findbyID(movementId)
+                .orElseThrow(()-> new RuntimeException("Movement not found"));
+        setEntity.setMovement(movementEntity);
         SetEntity savedSet = setService.save(setEntity);
         return setMapper.mapTo(savedSet);
     }
@@ -44,23 +54,33 @@ public class SetController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping(path = "/sets/{id}")
-    public ResponseEntity<SetDto> fullUpdate(@PathVariable("id") Long id, @RequestBody SetDto setDto){
+    @PutMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
+    public ResponseEntity<SetDto> fullUpdate(@PathVariable("userId") Long userId,
+                                             @PathVariable("sessionId") Long sessionId,
+                                             @PathVariable("movementId") Long movementId,
+                                             @PathVariable("id") Long id, @RequestBody SetDto setDto){
         if(!setService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         setDto.setId(id);
         SetEntity set = setMapper.mapFrom(setDto);
+        MovementEntity movementEntity = movementService.findbyID(movementId).orElseThrow(()-> new RuntimeException("Movement not found"));
+        set.setMovement(movementEntity);
         SetEntity updatedSet = setService.save(set);
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/sets/{id}")
-    public ResponseEntity<SetDto> partialUpdate(@PathVariable("id") Long id, @RequestBody SetDto setDto){
+    @PatchMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
+    public ResponseEntity<SetDto> partialUpdate(@PathVariable("userId") Long userId,
+                                                @PathVariable("sessionId") Long sessionId,
+                                                @PathVariable("movementId") Long movementId,
+                                                @PathVariable("id") Long id, @RequestBody SetDto setDto){
         if(!setService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         SetEntity setEntity = setMapper.mapFrom(setDto);
+        MovementEntity movementEntity = movementService.findbyID(movementId).orElseThrow(()-> new RuntimeException("Movement not found"));
+        setEntity.setMovement(movementEntity);
         SetEntity updatedSet = setService.partialUpdate(id, setEntity);
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }

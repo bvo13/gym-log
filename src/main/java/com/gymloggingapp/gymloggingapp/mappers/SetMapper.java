@@ -7,18 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SetMapper implements Mapper<SetEntity, SetDto> {
-    private ModelMapper modelMapper;
-
-    public SetMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public SetDto mapTo(SetEntity setEntity) {
-        return modelMapper.map(setEntity, SetDto.class);
+        return new SetDto(setEntity.getId(), setEntity.getWeight(),
+                setEntity.getReps(), setEntity.getRir());
     }
     @Override
     public SetEntity mapFrom(SetDto setDto) {
-        return modelMapper.map(setDto, SetEntity.class);
+        return new SetEntity(setDto.getId(), setDto.getWeight(), setDto.getReps(), setDto.getRir());
     }
 }

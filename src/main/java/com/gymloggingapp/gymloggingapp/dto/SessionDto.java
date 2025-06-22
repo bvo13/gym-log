@@ -1,7 +1,5 @@
 package com.gymloggingapp.gymloggingapp.dto;
 
-import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
-import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +15,7 @@ public class SessionDto {
 
     private LocalDate date;
 
-    private List<MovementDto> movement;
+    private List<MovementDto> movements;
 
-    private UserDto user;
+
 }

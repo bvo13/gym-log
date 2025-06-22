@@ -12,7 +12,6 @@ public class SetDto {
     private Long id;
 
 
-    private MovementDto movement;
 
     private Integer weight;
     private Integer reps;

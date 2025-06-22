@@ -29,7 +29,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Optional<SessionEntity> findOneUser(Long id) {
+    public Optional<SessionEntity> findOneSession(Long id) {
         return sessionRepository.findById(id);
     }
 

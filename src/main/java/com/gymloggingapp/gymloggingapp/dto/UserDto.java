@@ -1,7 +1,5 @@
 package com.gymloggingapp.gymloggingapp.dto;
 
-import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +14,6 @@ public class UserDto {
 
     private String name;
 
-    private List<SessionDto> session;
+
+    private List<SessionDto> sessions;
 }
