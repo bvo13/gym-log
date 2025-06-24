@@ -19,7 +19,7 @@ public class JwtService {
 
     private final String SECRET_KEY = "Qa6u6TXdxOQhH4389fLs4l6HRgO0vXJQi0AlV62EO1B5MjhiNJ+gRqotio/SJ+hFiyb8ZTkVyZOsjlV+cnNrBtj4DPjlf7HszczXOItZrM1Onb22OAI/p5z/3+ZMWoLtllJDru7a/aQiSMOqNpy00mTp9aAZ9FIKoDQ5tOcKFnd7b+qB5UYzE4XoU0BGzw3JRZwg0zacklajcKlMdzoB3v4qddDCJ5vHaIO8B0Caj8GO77jkCw726LvZQSwh9cEy30bFiSJw3VBKcQfPHll3rNGxKlf8rXZTLydH95xNIxCob/K1r6anQ8JyyYJFjWS2b0FWDYmpEd7GDwuskmVffb8ask7pcpsrxEkzvRo2NQM=";
 
-    private String extractUserEmail(String token){
+    public String extractUserEmail(String token){
     return extractClaim(token, Claims::getSubject);
     }
 
