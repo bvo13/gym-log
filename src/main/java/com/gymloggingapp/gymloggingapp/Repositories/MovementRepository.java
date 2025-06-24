@@ -1,7 +1,7 @@
 package com.gymloggingapp.gymloggingapp.Repositories;
 
 import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MovementRepository extends CrudRepository<MovementEntity, Long> {
+public interface MovementRepository extends JpaRepository<MovementEntity, Long> {
 }
