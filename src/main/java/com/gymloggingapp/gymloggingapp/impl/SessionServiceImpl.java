@@ -3,6 +3,7 @@ package com.gymloggingapp.gymloggingapp.impl;
 import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.SessionRepository;
 import com.gymloggingapp.gymloggingapp.Service.SessionService;
+import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +45,10 @@ public class SessionServiceImpl implements SessionService {
         return sessionRepository.findById(id).map(existingSession -> {
             Optional.ofNullable(session.getDate()).ifPresent(existingSession::setDate);
             Optional.ofNullable(session.getUser()).ifPresent(existingSession::setUser);
-            Optional.ofNullable(session.getMovements()).ifPresent(existingSession::setMovements);
+            Optional.ofNullable(session.getMovements()).ifPresent(movements-> {
+                existingSession.setMovements(movements);
+                References.setSessionParentReference(existingSession);
+            });
             return sessionRepository.save(existingSession);
         }).orElseThrow(()->new RuntimeException("Session not Found"));
     }

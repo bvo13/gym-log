@@ -27,7 +27,7 @@ public class SetEntity {
     private Integer reps;
     private Integer rir;
 
-    public SetEntity(Long id, Integer weight, Integer rir, Integer reps) {
+    public SetEntity(Long id, Integer weight, Integer reps, Integer rir) {
         this.id = id;
         this.weight = weight;
         this.rir = rir;

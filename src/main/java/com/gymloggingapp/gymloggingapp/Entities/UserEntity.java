@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.management.relation.Role;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,12 @@ public class UserEntity {
     private Long id;
 
     private String name;
+
+    private String email;
+
+    private String password;
+
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

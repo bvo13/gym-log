@@ -3,6 +3,7 @@ package com.gymloggingapp.gymloggingapp.impl;
 import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.MovementRepository;
 import com.gymloggingapp.gymloggingapp.Service.MovementService;
+import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -43,7 +44,10 @@ public class MovementServiceImpl implements MovementService {
         movement.setId(id);
         return movementRepository.findById(id).map(existingMovement -> {
             Optional.ofNullable(movement.getName()).ifPresent(existingMovement::setName);
-            Optional.ofNullable(movement.getSets()).ifPresent(existingMovement::setSets);
+            Optional.ofNullable(movement.getSets()).ifPresent(set-> {
+                existingMovement.setSets(set);
+                References.setMovementParentReference(existingMovement);
+            });
             Optional.ofNullable(movement.getSession()).ifPresent(existingMovement::setSession);
             return movementRepository.save(existingMovement);
         }).orElseThrow(()-> new RuntimeException("Movement does not exist"));

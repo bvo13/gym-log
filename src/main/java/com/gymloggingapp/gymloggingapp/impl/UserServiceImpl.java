@@ -4,6 +4,7 @@ import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.UserRepository;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
 import com.gymloggingapp.gymloggingapp.dto.UserDto;
+import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +47,10 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findById(id).map(existingUser -> {
                     Optional.ofNullable(userEntity.getName()).ifPresent(existingUser::setName);
-                    Optional.ofNullable(userEntity.getSessions()).ifPresent(existingUser::setSessions);
+                    Optional.ofNullable(userEntity.getSessions()).ifPresent(sessions->{
+                        existingUser.setSessions(sessions);
+                        References.setUserParentReference(existingUser);
+                    });
                    return userRepository.save(existingUser);
                 }).orElseThrow(()-> new RuntimeException("User does not exist"));
     }
