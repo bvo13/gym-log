@@ -10,6 +10,7 @@ import com.gymloggingapp.gymloggingapp.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,12 +19,12 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
+    private final PasswordEncoder passwordEncoder;
     public AuthenticationResponse register(RegistrationRequest request){
         UserEntity user = UserEntity.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         user.setRole(Role.USER);
         userRepository.save(user);
