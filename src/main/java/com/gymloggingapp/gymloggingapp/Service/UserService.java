@@ -1,7 +1,6 @@
 package com.gymloggingapp.gymloggingapp.Service;
 
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
-import com.gymloggingapp.gymloggingapp.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;

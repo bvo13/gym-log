@@ -3,18 +3,14 @@ package com.gymloggingapp.gymloggingapp.mappers;
 import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.dto.SessionDto;
-import com.gymloggingapp.gymloggingapp.dto.UserDto;
-import org.apache.catalina.User;
-import org.modelmapper.ModelMapper;
+import com.gymloggingapp.gymloggingapp.dto.UserInfoDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @org.mapstruct.Mapper(componentModel = "spring")
-public class UserMapper implements Mapper<UserEntity, UserDto>{
+public class UserMapper implements Mapper<UserEntity, UserInfoDto>{
 
     private SessionMapper sessionMapper;
 
@@ -23,20 +19,20 @@ public class UserMapper implements Mapper<UserEntity, UserDto>{
     }
 
     @Override
-    public UserDto mapTo(UserEntity userEntity) {
+    public UserInfoDto mapTo(UserEntity userEntity) {
         List<SessionDto> sessionDtos = null;
         if(userEntity.getSessions()!=null){
             sessionDtos = userEntity.getSessions().stream().map(sessionMapper::mapTo).toList();
         }
-        return new UserDto(userEntity.getId(), userEntity.getName(), sessionDtos);
+        return new UserInfoDto(userEntity.getId(), userEntity.getName(), sessionDtos);
     }
 
     @Override
-    public UserEntity mapFrom(UserDto userDto) {
+    public UserEntity mapFrom(UserInfoDto userInfoDto) {
         List<SessionEntity> sessionEntities = null;
-        if(userDto.getSessions()!= null){
-            sessionEntities = userDto.getSessions().stream().map(sessionMapper::mapFrom).toList();
+        if(userInfoDto.getSessions()!= null){
+            sessionEntities = userInfoDto.getSessions().stream().map(sessionMapper::mapFrom).toList();
         }
-        return new UserEntity(userDto.getId(), userDto.getName(), sessionEntities);
+        return new UserEntity(userInfoDto.getId(), userInfoDto.getName(), sessionEntities);
     }
 }

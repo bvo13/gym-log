@@ -3,7 +3,6 @@ package com.gymloggingapp.gymloggingapp.impl;
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.UserRepository;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
-import com.gymloggingapp.gymloggingapp.dto.UserDto;
 import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.stereotype.Service;
 

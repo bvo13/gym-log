@@ -2,10 +2,11 @@ package com.gymloggingapp.gymloggingapp.Controllers;
 
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
-import com.gymloggingapp.gymloggingapp.dto.UserDto;
+import com.gymloggingapp.gymloggingapp.dto.UserInfoDto;
 import com.gymloggingapp.gymloggingapp.mappers.UserMapper;
 import com.gymloggingapp.gymloggingapp.util.References;
-import org.apache.catalina.User;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,56 +28,38 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping(path = "/users")
-    public UserDto createUser(@RequestBody UserDto user){
-        UserEntity userEntity = userMapper.mapFrom(user);
-        References.setUserParentReference(userEntity);
-        UserEntity savedUser = userService.save(userEntity);
-        return userMapper.mapTo(savedUser);
-    }
 
     @GetMapping(path = "/users/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id){
+    public ResponseEntity<UserInfoDto> getUser(@PathVariable("id") Long id){
         Optional<UserEntity> findUser = userService.findOneUser(id);
-        return findUser.map(userEntity -> {UserDto userDto = userMapper.mapTo(userEntity);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return findUser.map(userEntity -> {
+            UserInfoDto userInfoDto = userMapper.mapTo(userEntity);
+        return new ResponseEntity<>(userInfoDto, HttpStatus.OK);}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
 
     @GetMapping(path = "/users")
-    public List<UserDto> listUsers(){
+    public List<UserInfoDto> listUsers(){
         List<UserEntity> allUsers = userService.findAll();
         return allUsers.stream().map(userMapper::mapTo).collect(Collectors.toList());
     }
 
-    @PutMapping(path = "/users/{id}")
-    public ResponseEntity<UserDto> fullUpdate(@PathVariable("id") Long id, @RequestBody UserDto userDto){
-        if(!(userService.exists(id))) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userDto.setId(id);
-        UserEntity userEntity = userMapper.mapFrom(userDto);
-        References.setUserParentReference(userEntity);
-        UserEntity updatedUser = userService.save(userEntity);
-        return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
-
-    }
 
     @PatchMapping(path = "/users/{id}")
-    public ResponseEntity<UserDto> partialUpdate(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+    public ResponseEntity<UserInfoDto> partialUpdate(@PathVariable("id") Long id, @RequestBody UserInfoDto userInfoDto){
 
         if(!(userService.exists(id))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        UserEntity userEntity = userMapper.mapFrom(userDto);
+        UserEntity userEntity = userMapper.mapFrom(userInfoDto);
         References.setUserParentReference(userEntity);
         UserEntity updatedUser = userService.partialUpdate(id, userEntity);
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/users/{id}")
-    public ResponseEntity<UserDto> deleteUser(@PathVariable("id") Long id){
+    public ResponseEntity<UserInfoDto> deleteUser(@PathVariable("id") Long id){
         if(!(userService.exists(id))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
