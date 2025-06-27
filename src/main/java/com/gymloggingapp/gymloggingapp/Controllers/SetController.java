@@ -2,12 +2,14 @@ package com.gymloggingapp.gymloggingapp.Controllers;
 
 import com.gymloggingapp.gymloggingapp.Entities.MovementEntity;
 import com.gymloggingapp.gymloggingapp.Entities.SetEntity;
+import com.gymloggingapp.gymloggingapp.Service.AuthenticationService;
 import com.gymloggingapp.gymloggingapp.Service.MovementService;
 import com.gymloggingapp.gymloggingapp.Service.SetService;
 import com.gymloggingapp.gymloggingapp.dto.SetDto;
 import com.gymloggingapp.gymloggingapp.mappers.SetMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +21,17 @@ public class SetController {
     private SetService setService;
     private SetMapper setMapper;
     private MovementService movementService;
+    private AuthenticationService authenticationService;
 
-    public SetController(SetService setService, SetMapper setMapper, MovementService movementService) {
+    public SetController(SetService setService, SetMapper setMapper, MovementService movementService
+    ,AuthenticationService authenticationService) {
         this.setService = setService;
         this.setMapper = setMapper;
         this.movementService = movementService;
+        this.authenticationService = authenticationService;
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PostMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets")
     public SetDto createSet(@PathVariable("userId") Long userId,
                             @PathVariable("sessionId") Long sessionId,
@@ -54,6 +60,7 @@ public class SetController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PutMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> fullUpdate(@PathVariable("userId") Long userId,
                                              @PathVariable("sessionId") Long sessionId,
@@ -70,6 +77,7 @@ public class SetController {
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PatchMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> partialUpdate(@PathVariable("userId") Long userId,
                                                 @PathVariable("sessionId") Long sessionId,
@@ -85,6 +93,7 @@ public class SetController {
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#id)")
     @DeleteMapping(path = "/sets/{id}")
     public ResponseEntity<SetDto> delete(@PathVariable("id") Long id){
         if(!setService.existsByID(id)){

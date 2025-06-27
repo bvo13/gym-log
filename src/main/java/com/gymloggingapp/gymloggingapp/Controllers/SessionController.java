@@ -2,6 +2,7 @@ package com.gymloggingapp.gymloggingapp.Controllers;
 
 import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
+import com.gymloggingapp.gymloggingapp.Service.AuthenticationService;
 import com.gymloggingapp.gymloggingapp.Service.SessionService;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
 import com.gymloggingapp.gymloggingapp.dto.SessionDto;
@@ -9,6 +10,7 @@ import com.gymloggingapp.gymloggingapp.mappers.SessionMapper;
 import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,17 @@ public class SessionController {
     private SessionService sessionService;
     private SessionMapper sessionMapper;
     private UserService userService;
+    private AuthenticationService authenticationService;
 
-    public SessionController(SessionService sessionService, SessionMapper sessionMapper, UserService userService) {
+    public SessionController(SessionService sessionService, SessionMapper sessionMapper, UserService userService,
+                             AuthenticationService authenticationService) {
         this.sessionService = sessionService;
         this.sessionMapper = sessionMapper;
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PostMapping(path = "/users/{userId}/sessions")
     public SessionDto createSession(@PathVariable("userId") Long userId, @RequestBody SessionDto session){
         SessionEntity sessionEntity = sessionMapper.mapFrom(session);
@@ -37,6 +43,7 @@ public class SessionController {
         SessionEntity savedSession = sessionService.save(sessionEntity);
         return sessionMapper.mapTo(savedSession);
     }
+
 
     @GetMapping(path = "/sessions")
     public List<SessionDto> findAllSessions(){
@@ -52,6 +59,7 @@ public class SessionController {
             return new ResponseEntity<>(sessionDto, HttpStatus.OK);}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PutMapping(path = "/users/{userId}/sessions/{id}")
     public ResponseEntity<SessionDto> fullUpdate(@PathVariable("userId") Long userId,
                                                  @PathVariable("id") Long id,
@@ -68,6 +76,7 @@ public class SessionController {
         return new ResponseEntity<>(sessionMapper.mapTo(savedSession),HttpStatus.OK);
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PatchMapping(path = "/users/{userId}/sessions/{id}")
     public ResponseEntity<SessionDto> partialUpdate(@PathVariable("userId") Long userId, @PathVariable("id") Long id, @RequestBody SessionDto sessionDto){
         if(!sessionService.existsbyID(id)){
@@ -81,6 +90,7 @@ public class SessionController {
         return new ResponseEntity<>(sessionMapper.mapTo(updatedSession), HttpStatus.OK);
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#id)")
     @DeleteMapping(path = "/sessions/{id}")
     public ResponseEntity<SessionDto> delete(@PathVariable("id") Long id){
         if(!sessionService.existsbyID(id)){

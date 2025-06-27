@@ -1,6 +1,7 @@
 package com.gymloggingapp.gymloggingapp.Controllers;
 
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
+import com.gymloggingapp.gymloggingapp.Service.AuthenticationService;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
 import com.gymloggingapp.gymloggingapp.dto.UserInfoDto;
 import com.gymloggingapp.gymloggingapp.mappers.UserMapper;
@@ -9,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +25,15 @@ public class UserController {
 
     private UserMapper userMapper;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    private AuthenticationService authenticationService;
+
+    public UserController(UserService userService, UserMapper userMapper, AuthenticationService authenticationService) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.authenticationService = authenticationService;
     }
 
-
+    @PreAuthorize("@authenticationService.checkAccess(#id)")
     @GetMapping(path = "/users/{id}")
     public ResponseEntity<UserInfoDto> getUser(@PathVariable("id") Long id){
         Optional<UserEntity> findUser = userService.findOneUser(id);
@@ -44,7 +49,7 @@ public class UserController {
         return allUsers.stream().map(userMapper::mapTo).collect(Collectors.toList());
     }
 
-
+    @PreAuthorize("@authenticationService.checkAccess(#id)")
     @PatchMapping(path = "/users/{id}")
     public ResponseEntity<UserInfoDto> partialUpdate(@PathVariable("id") Long id, @RequestBody UserInfoDto userInfoDto){
 
@@ -58,6 +63,7 @@ public class UserController {
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
+    @PreAuthorize("@authenticationService.checkAccess(#id)")
     @DeleteMapping(path = "/users/{id}")
     public ResponseEntity<UserInfoDto> deleteUser(@PathVariable("id") Long id){
         if(!(userService.exists(id))) {
