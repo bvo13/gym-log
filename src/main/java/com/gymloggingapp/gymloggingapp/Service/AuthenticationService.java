@@ -10,6 +10,8 @@ import com.gymloggingapp.gymloggingapp.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +40,12 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
+    }
+
+    public boolean checkAccess(Long compareId){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity authenticatedUser = userRepository.findByEmail(email).orElseThrow(
+                ()-> new UsernameNotFoundException("User not found"));
+        return authenticatedUser.getId().equals(compareId);
     }
 }
