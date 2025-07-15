@@ -1,11 +1,15 @@
 package com.gymloggingapp.gymloggingapp.config;
 
+import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
+import com.gymloggingapp.gymloggingapp.Repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -14,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@AllArgsConstructor
 @Service
 public class JwtService {
 

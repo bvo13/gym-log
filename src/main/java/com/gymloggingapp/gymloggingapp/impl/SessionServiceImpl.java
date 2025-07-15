@@ -1,6 +1,7 @@
 package com.gymloggingapp.gymloggingapp.impl;
 
 import com.gymloggingapp.gymloggingapp.Entities.SessionEntity;
+import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.SessionRepository;
 import com.gymloggingapp.gymloggingapp.Service.SessionService;
 import com.gymloggingapp.gymloggingapp.util.References;
@@ -27,6 +28,12 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public List<SessionEntity> findAll() {
         return StreamSupport.stream(sessionRepository.findAll().spliterator(),false).collect(Collectors.toList());
+    }
+
+    public List<SessionEntity> findByUser(UserEntity user){
+        return StreamSupport.stream(sessionRepository.findByUser(user).spliterator(),false).collect(
+                Collectors.toList()
+        );
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.gymloggingapp.gymloggingapp.util.References;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,15 @@ public class SessionController {
     @GetMapping(path = "/sessions")
     public List<SessionDto> findAllSessions(){
         List<SessionEntity> allSessions = sessionService.findAll();
+        return allSessions.stream().map(sessionMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
+    @GetMapping(path = "/users/{userId}/sessions")
+    public List<SessionDto> findAllSessionsForUser(@PathVariable("userId") Long userId){
+        List<SessionEntity> allSessions = sessionService.findByUser(userService.findOneUser(userId).orElseThrow(()->
+                new UsernameNotFoundException("user with this id does not exist")
+        ));
         return allSessions.stream().map(sessionMapper::mapTo).collect(Collectors.toList());
     }
 
