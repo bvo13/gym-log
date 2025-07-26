@@ -93,8 +93,8 @@ public class SetController {
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @DeleteMapping(path = "/sets/{id}")
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
+    @DeleteMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> delete(@PathVariable("id") Long id){
         if(!setService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

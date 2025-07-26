@@ -62,7 +62,7 @@ public class MovementController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
     @PutMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{id}")
     public ResponseEntity<MovementDto> fullUpdate(@PathVariable("userId") Long userId,
                                                   @PathVariable("sessionId") Long sessionId,
@@ -97,9 +97,10 @@ public class MovementController {
         return new ResponseEntity<>(movementMapper.mapTo(updatedMovement),HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @DeleteMapping(path = "/movements/{id}")
-    public ResponseEntity<MovementDto> delete(@PathVariable("id") Long id){
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
+    @DeleteMapping(path = "users/{userId}/sessions/{sessionId}/movements/{id}")
+    public ResponseEntity<MovementDto> delete(@PathVariable("userId") Long userId,
+                                              @PathVariable("sessionId") Long sessionId, @PathVariable("id") Long id){
         if(!movementService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

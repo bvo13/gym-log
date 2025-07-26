@@ -27,6 +27,7 @@ public class SessionEntity {
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @OrderBy("id ASC")
     private List<MovementEntity> movements;
 
     @ManyToOne

@@ -61,8 +61,9 @@ public class SessionController {
         return allSessions.stream().map(sessionMapper::mapTo).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/sessions/{id}")
-    public ResponseEntity<SessionDto> findOneSession(@PathVariable("id") Long id){
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
+    @GetMapping(path = "/users/{userId}/sessions/{id}")
+    public ResponseEntity<SessionDto> findOneSession(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
         Optional<SessionEntity> findSession = sessionService.findOneSession(id);
         return findSession.map(sessionEntity -> {
             SessionDto sessionDto = sessionMapper.mapTo(sessionEntity);
@@ -100,9 +101,9 @@ public class SessionController {
         return new ResponseEntity<>(sessionMapper.mapTo(updatedSession), HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @DeleteMapping(path = "/sessions/{id}")
-    public ResponseEntity<SessionDto> delete(@PathVariable("id") Long id){
+    @PreAuthorize("@authenticationService.checkAccess(#userId)")
+    @DeleteMapping(path = "/users/{userId}/sessions/{id}")
+    public ResponseEntity<SessionDto> delete(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
         if(!sessionService.existsbyID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

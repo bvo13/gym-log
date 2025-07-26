@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -31,7 +30,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     public List<SessionEntity> findByUser(UserEntity user){
-        return StreamSupport.stream(sessionRepository.findByUser(user).spliterator(),false).collect(
+        return StreamSupport.stream(sessionRepository.findByUserOrderByDateDesc(user).spliterator(),false).collect(
                 Collectors.toList()
         );
     }
