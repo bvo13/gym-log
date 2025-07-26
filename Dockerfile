@@ -12,4 +12,4 @@ RUN ./mvnw clean package -Dmaven.test.skip=true
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "target/gymlogginapp-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "target/gymloggingapp-0.0.1-SNAPSHOT.jar"]
