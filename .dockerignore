@@ -1,6 +1,4 @@
 target/
 .gitignore
 docker-compose.yml
-.mvn/
 .idea
-test/
