@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: gym-log
-    env: java
-    plan: starter
-    buildCommand: "./mvnw clean package -DskipTests"
-    startCommand: "java -jar target/gymloggingapp-0.0.1-SNAPSHOT.jar"
