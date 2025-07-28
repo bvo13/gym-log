@@ -1,10 +1,16 @@
 package com.gymloggingapp.gymloggingapp.config;
 
+import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
 import com.gymloggingapp.gymloggingapp.Repositories.UserRepository;
+import com.gymloggingapp.gymloggingapp.Service.AuthenticationService;
+import com.gymloggingapp.gymloggingapp.util.TokenExtractor;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.antlr.v4.runtime.Token;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,34 +27,43 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenExtractor tokenExtractor;
 
 
-    public JwtAuthFilter(JwtService jwtService, UserRepository userRepository, UserDetailsService userDetailsService) {
+    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService, TokenExtractor tokenExtractor) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
 
+        this.tokenExtractor = tokenExtractor;
     }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        final String jwt = tokenExtractor.extractToken(request, "access_token");
         final String userEmail;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUserEmail(jwt);
+        try {
+            userEmail = jwtService.extractUserEmail(jwt);
+        }
+        catch(JwtException jwtException){
+            filterChain.doFilter(request, response);
+            return;
+
+        }
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserEntity user = (UserEntity)userDetails;
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails,
+                        new UsernamePasswordAuthenticationToken(user,
                                 null,
-                                userDetails.getAuthorities());
+                                user.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );

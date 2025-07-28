@@ -31,9 +31,9 @@ public class SetController {
         this.authenticationService = authenticationService;
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PostMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets")
-    public SetDto createSet(@PathVariable("userId") Long userId,
+
+    @PostMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets")
+    public SetDto createSet(
                             @PathVariable("sessionId") Long sessionId,
                             @PathVariable("movementId") Long movementId,
                             @RequestBody SetDto set){
@@ -60,9 +60,8 @@ public class SetController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PutMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
-    public ResponseEntity<SetDto> fullUpdate(@PathVariable("userId") Long userId,
+    @PutMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets/{id}")
+    public ResponseEntity<SetDto> fullUpdate(
                                              @PathVariable("sessionId") Long sessionId,
                                              @PathVariable("movementId") Long movementId,
                                              @PathVariable("id") Long id, @RequestBody SetDto setDto){
@@ -77,8 +76,8 @@ public class SetController {
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PatchMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
+
+    @PatchMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> partialUpdate(@PathVariable("userId") Long userId,
                                                 @PathVariable("sessionId") Long sessionId,
                                                 @PathVariable("movementId") Long movementId,
@@ -93,8 +92,8 @@ public class SetController {
         return new ResponseEntity<>(setMapper.mapTo(updatedSet),HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @DeleteMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{movementId}/sets/{id}")
+
+    @DeleteMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> delete(@PathVariable("id") Long id){
         if(!setService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

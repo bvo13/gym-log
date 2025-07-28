@@ -33,9 +33,10 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @GetMapping(path = "/users/{id}")
-    public ResponseEntity<UserInfoDto> getUser(@PathVariable("id") Long id){
+
+    @GetMapping(path = "/users/me")
+    public ResponseEntity<UserInfoDto> getUser(){
+        Long id = authenticationService.getCurrentUserId();
         Optional<UserEntity> findUser = userService.findOneUser(id);
         return findUser.map(userEntity -> {
             UserInfoDto userInfoDto = userMapper.mapTo(userEntity);
@@ -49,10 +50,11 @@ public class UserController {
         return allUsers.stream().map(userMapper::mapTo).collect(Collectors.toList());
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @PatchMapping(path = "/users/{id}")
-    public ResponseEntity<UserInfoDto> partialUpdate(@PathVariable("id") Long id, @RequestBody UserInfoDto userInfoDto){
 
+    @PatchMapping(path = "/users/me")
+    public ResponseEntity<UserInfoDto> partialUpdate(@RequestBody UserInfoDto userInfoDto){
+
+        Long id = authenticationService.getCurrentUserId();
         if(!(userService.exists(id))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -63,9 +65,10 @@ public class UserController {
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#id)")
-    @DeleteMapping(path = "/users/{id}")
-    public ResponseEntity<UserInfoDto> deleteUser(@PathVariable("id") Long id){
+
+    @DeleteMapping(path = "/users/me")
+    public ResponseEntity<UserInfoDto> deleteUser(){
+        Long id = authenticationService.getCurrentUserId();
         if(!(userService.exists(id))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

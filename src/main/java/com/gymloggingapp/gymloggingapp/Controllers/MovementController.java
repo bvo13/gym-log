@@ -33,9 +33,9 @@ public class MovementController {
         this.authenticationService = authenticationService;
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PostMapping(path = "/users/{userId}/sessions/{sessionId}/movements")
-    public MovementDto createMovement(@PathVariable("userId") Long userId,
+
+    @PostMapping(path = "/users/me/sessions/{sessionId}/movements")
+    public MovementDto createMovement(
                                       @PathVariable("sessionId") Long sessionId,
                                       @RequestBody MovementDto movement) {
         MovementEntity movementEntity = movementMapper.mapFrom(movement);
@@ -62,9 +62,9 @@ public class MovementController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PutMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{id}")
-    public ResponseEntity<MovementDto> fullUpdate(@PathVariable("userId") Long userId,
+
+    @PutMapping(path = "/users/me/sessions/{sessionId}/movements/{id}")
+    public ResponseEntity<MovementDto> fullUpdate(
                                                   @PathVariable("sessionId") Long sessionId,
                                                   @PathVariable("id") Long id,
                                                   @RequestBody MovementDto movementDto){
@@ -80,9 +80,9 @@ public class MovementController {
         return new ResponseEntity<>(movementMapper.mapTo(updatedMovement), HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @PatchMapping(path = "/users/{userId}/sessions/{sessionId}/movements/{id}")
-    public ResponseEntity<MovementDto> partialUpdate(@PathVariable("userId") Long userId,
+
+    @PatchMapping(path = "/users/me/sessions/{sessionId}/movements/{id}")
+    public ResponseEntity<MovementDto> partialUpdate(
                                                      @PathVariable("sessionId") Long sessionId,
                                                      @PathVariable("id") Long id,
                                                      @RequestBody MovementDto movementDto){
@@ -97,10 +97,9 @@ public class MovementController {
         return new ResponseEntity<>(movementMapper.mapTo(updatedMovement),HttpStatus.OK);
     }
 
-    @PreAuthorize("@authenticationService.checkAccess(#userId)")
-    @DeleteMapping(path = "users/{userId}/sessions/{sessionId}/movements/{id}")
-    public ResponseEntity<MovementDto> delete(@PathVariable("userId") Long userId,
-                                              @PathVariable("sessionId") Long sessionId, @PathVariable("id") Long id){
+
+    @DeleteMapping(path = "users/me/sessions/{sessionId}/movements/{id}")
+    public ResponseEntity<MovementDto> delete(@PathVariable("sessionId") Long sessionId, @PathVariable("id") Long id){
         if(!movementService.existsByID(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
