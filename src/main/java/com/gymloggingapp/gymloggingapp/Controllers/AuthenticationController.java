@@ -34,14 +34,14 @@ public class AuthenticationController {
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", authenticationResponse.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.ok().headers(httpHeaders -> {
@@ -60,14 +60,14 @@ public class AuthenticationController {
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", authenticationResponse.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.ok().headers(httpHeaders -> {
@@ -83,14 +83,14 @@ public class AuthenticationController {
                 .path("/")
                 .maxAge(0)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
         .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token","")
                 .httpOnly(true)
                 .path("/")
                 .maxAge(0)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
         .build();
         authenticationService.logout();
 
@@ -110,14 +110,14 @@ public class AuthenticationController {
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", authenticationResponse.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.ok().headers(httpHeaders -> {
