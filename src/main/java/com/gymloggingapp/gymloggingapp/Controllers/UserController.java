@@ -40,7 +40,7 @@ public class UserController {
         Optional<UserEntity> findUser = userService.findOneUser(id);
         return findUser.map(userEntity -> {
             UserInfoDto userInfoDto = userMapper.mapTo(userEntity);
-        return new ResponseEntity<>(userInfoDto, HttpStatus.OK);}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(userInfoDto, HttpStatus.OK);}).orElse(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
 
     }
 
@@ -56,7 +56,7 @@ public class UserController {
 
         Long id = authenticationService.getCurrentUserId();
         if(!(userService.exists(id))) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         UserEntity userEntity = userMapper.mapFrom(userInfoDto);
@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<UserInfoDto> deleteUser(){
         Long id = authenticationService.getCurrentUserId();
         if(!(userService.exists(id))) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

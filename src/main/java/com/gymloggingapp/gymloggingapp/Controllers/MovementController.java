@@ -59,7 +59,7 @@ public class MovementController {
         return foundMovement.map(movementEntity -> {
             MovementDto movementDto = movementMapper.mapTo(movementEntity);
             return new ResponseEntity<>(movementDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }).orElse(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }
 
 
@@ -69,7 +69,7 @@ public class MovementController {
                                                   @PathVariable("id") Long id,
                                                   @RequestBody MovementDto movementDto){
         if(!movementService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         movementDto.setId(id);
         MovementEntity movement = movementMapper.mapFrom(movementDto);
@@ -87,7 +87,7 @@ public class MovementController {
                                                      @PathVariable("id") Long id,
                                                      @RequestBody MovementDto movementDto){
         if(!movementService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         MovementEntity movement = movementMapper.mapFrom(movementDto);
         SessionEntity session = sessionService.findOneSession(sessionId).orElseThrow(()-> new RuntimeException("Session not found"));
@@ -101,7 +101,7 @@ public class MovementController {
     @DeleteMapping(path = "users/me/sessions/{sessionId}/movements/{id}")
     public ResponseEntity<MovementDto> delete(@PathVariable("sessionId") Long sessionId, @PathVariable("id") Long id){
         if(!movementService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         movementService.delete(id);

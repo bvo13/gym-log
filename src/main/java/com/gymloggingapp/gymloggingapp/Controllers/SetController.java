@@ -57,7 +57,7 @@ public class SetController {
         return foundSet.map(existingSet-> {
             SetDto setDto = setMapper.mapTo(existingSet);
             return new ResponseEntity<>(setDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }).orElse(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }
 
     @PutMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets/{id}")
@@ -66,7 +66,7 @@ public class SetController {
                                              @PathVariable("movementId") Long movementId,
                                              @PathVariable("id") Long id, @RequestBody SetDto setDto){
         if(!setService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         setDto.setId(id);
         SetEntity set = setMapper.mapFrom(setDto);
@@ -83,7 +83,7 @@ public class SetController {
                                                 @PathVariable("movementId") Long movementId,
                                                 @PathVariable("id") Long id, @RequestBody SetDto setDto){
         if(!setService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         SetEntity setEntity = setMapper.mapFrom(setDto);
         MovementEntity movementEntity = movementService.findbyID(movementId).orElseThrow(()-> new RuntimeException("Movement not found"));
@@ -96,7 +96,7 @@ public class SetController {
     @DeleteMapping(path = "/users/me/sessions/{sessionId}/movements/{movementId}/sets/{id}")
     public ResponseEntity<SetDto> delete(@PathVariable("id") Long id){
         if(!setService.existsByID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         setService.delete(id);

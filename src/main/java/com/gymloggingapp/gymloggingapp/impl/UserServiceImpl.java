@@ -1,9 +1,12 @@
 package com.gymloggingapp.gymloggingapp.impl;
 
 import com.gymloggingapp.gymloggingapp.Entities.UserEntity;
+import com.gymloggingapp.gymloggingapp.Repositories.RefreshTokenRepository;
 import com.gymloggingapp.gymloggingapp.Repositories.UserRepository;
 import com.gymloggingapp.gymloggingapp.Service.UserService;
 import com.gymloggingapp.gymloggingapp.util.References;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,8 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -56,6 +61,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
+        refreshTokenRepository.deleteAllByUser(userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("user not found")));
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        userRepository.deleteAll();
     }
 }

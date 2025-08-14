@@ -78,7 +78,7 @@ public class SessionController {
                                                  @PathVariable("id") Long id,
                                                  @RequestBody SessionDto sessionDto){
         if(!sessionService.existsbyID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Long userId = authenticationService.getCurrentUserId();
         sessionDto.setId(id);
@@ -94,7 +94,7 @@ public class SessionController {
     @PatchMapping(path = "/users/me/sessions/{id}")
     public ResponseEntity<SessionDto> partialUpdate(@PathVariable("id") Long id, @RequestBody SessionDto sessionDto){
         if(!sessionService.existsbyID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Long userId = authenticationService.getCurrentUserId();
         SessionEntity session = sessionMapper.mapFrom(sessionDto);
@@ -109,7 +109,7 @@ public class SessionController {
     @DeleteMapping(path = "/users/me/sessions/{id}")
     public ResponseEntity<SessionDto> delete(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
         if(!sessionService.existsbyID(id)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         sessionService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
